@@ -581,10 +581,19 @@ let estoqueData={PQ:0,GD:0};
 
 function countPedidosSigla(sigla){
   const re=SIGLAS[sigla];
-  return orders.filter(o=>o.status!=='entregue'&&(
-    re.test(o.description||'')||re.test(o.notes||'')||
-    (o.items||[]).some(i=>re.test(i.desc||''))
-  )).length;
+  let total=0;
+  orders.filter(o=>o.status!=='entregue').forEach(o=>{
+    // conta itens com a sigla e soma quantidades
+    if(o.items&&o.items.length){
+      o.items.forEach(i=>{
+        if(re.test(i.desc||''))total+=(i.qty||1);
+      });
+    } else {
+      // sem itens, verifica descrição/notas — conta como 1
+      if(re.test(o.description||'')||re.test(o.notes||''))total+=1;
+    }
+  });
+  return total;
 }
 
 function renderEstoque(){
