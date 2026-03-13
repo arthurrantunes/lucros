@@ -588,12 +588,13 @@ function countPedidosSigla(sigla){
 }
 
 function renderEstoque(){
+  const map={PQ:'Pq',GD:'Gd'};
   ['PQ','GD'].forEach(s=>{
     const stock=estoqueData[s]||0;
     const pedidos=countPedidosSigla(s);
     const saldo=stock-pedidos;
-    const elStock=document.getElementById('est'+s+'Stock');
-    const elPed=document.getElementById('est'+s+'Pedidos');
+    const elStock=document.getElementById('est'+map[s]+'Stock');
+    const elPed=document.getElementById('est'+map[s]+'Pedidos');
     if(!elStock)return;
     elStock.textContent=stock;
     elStock.className='estoque-val '+(stock>0&&saldo<=0?'danger':saldo<=2&&stock>0?'warn':'ok');
@@ -616,15 +617,21 @@ async function saveEstoque(){
   const sigla=editEstoqueSigla;
   closeEstModal();
   try{
-    await sbFetch('config',{
+    const res=await fetch(SUPA_URL+'/rest/v1/config',{
       method:'POST',
-      headers:{'Prefer':'resolution=merge-duplicates'},
+      headers:{
+        'apikey':SUPA_KEY,
+        'Authorization':'Bearer '+SUPA_KEY,
+        'Content-Type':'application/json',
+        'Prefer':'resolution=merge-duplicates'
+      },
       body:JSON.stringify({key:'est_'+sigla,value:String(n)})
     });
+    if(!res.ok){const e=await res.text();throw new Error(e);}
     estoqueData[sigla]=n;
     renderEstoque();
     showToast(`✅ Estoque ${sigla}: ${n}`);
-  }catch(e){showToast('❌ Erro ao salvar estoque')}
+  }catch(e){console.error(e);showToast('❌ Erro ao salvar estoque')}
 }
 
 async function loadEstoqueFromDB(){
