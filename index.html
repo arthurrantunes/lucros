@@ -588,9 +588,10 @@ function countPedidosSigla(sigla){
       o.items.forEach(i=>{
         if(re.test(i.desc||''))total+=(i.qty||1);
       });
-    } else {
-      // sem itens, verifica descrição/notas — conta como 1
-      if(re.test(o.description||'')||re.test(o.notes||''))total+=1;
+    }
+    // também conta descrição geral se tiver sigla (sem itens ou com itens)
+    if(re.test(o.description||'')&&(!o.items||!o.items.length)){
+      total+=1;
     }
   });
   return total;
