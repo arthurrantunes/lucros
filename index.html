@@ -512,7 +512,7 @@ function onNameInput(){
     list.classList.remove('show');return;
   }
   list.innerHTML=filtered.map(c=>`
-    <div class="ac-item" onmousedown="pickClient(${JSON.stringify(c.name)},${JSON.stringify(c.phone)})">
+    <div class="ac-item" onmousedown="event.preventDefault();pickClient(${JSON.stringify(c.name)},${JSON.stringify(c.phone)})" ontouchstart="event.preventDefault();pickClient(${JSON.stringify(c.name)},${JSON.stringify(c.phone)})">
       <div class="ac-name">${c.name}</div>
       <div class="ac-meta">${c.count} pedido(s) · ${fmtCur(c.total)} · ${c.phone||'sem telefone'}</div>
     </div>`).join('');
