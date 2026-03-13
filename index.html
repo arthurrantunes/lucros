@@ -263,7 +263,22 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .rank-count{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent)}
 .rank-rev{font-size:10px;color:var(--text2);margin-top:2px}
 
-.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--accent);color:var(--text);padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;z-index:400;display:none;white-space:nowrap}
+.estoque-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 12px}
+.estoque-title{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.estoque-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.estoque-item{background:var(--surface2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.estoque-label{font-size:11px;font-weight:700;color:var(--text2)}
+.estoque-sublabel{font-size:10px;color:var(--text2);margin-top:1px}
+.estoque-nums{display:flex;align-items:center;gap:10px}
+.estoque-col{text-align:center}
+.estoque-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700}
+.estoque-val.ok{color:var(--accent)}
+.estoque-val.warn{color:var(--yellow)}
+.estoque-val.danger{color:var(--red)}
+.estoque-val.blue{color:var(--blue)}
+.estoque-col-label{font-size:9px;color:var(--text2);margin-top:1px}
+.estoque-divider{width:1px;height:28px;background:var(--border)}
+.btn-estoque-edit{background:none;border:none;font-size:14px;cursor:pointer;color:var(--text2);padding:2px 4px}
 .toast.show{display:block;animation:fadeInOut 2.2s ease forwards}
 @keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(8px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
 </style>
@@ -299,6 +314,46 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <div class="stat"><div class="stat-value" id="stTotal">0</div><div class="stat-label">Pedidos</div></div>
   <div class="stat"><div class="stat-value yellow" id="stPend">R$0</div><div class="stat-label">A Receber</div></div>
   <div class="stat"><div class="stat-value" id="stRec">R$0</div><div class="stat-label">Recebido</div></div>
+</div>
+
+<div class="estoque-bar">
+  <div class="estoque-title">📦 Estoque de Quadros</div>
+  <div class="estoque-grid">
+    <div class="estoque-item">
+      <div>
+        <div class="estoque-label">PQ <span style="font-weight:400;font-size:10px">30×20</span></div>
+      </div>
+      <div class="estoque-nums">
+        <div class="estoque-col">
+          <div class="estoque-val ok" id="estPqStock">0</div>
+          <div class="estoque-col-label">Estoque</div>
+        </div>
+        <div class="estoque-divider"></div>
+        <div class="estoque-col">
+          <div class="estoque-val blue" id="estPqPedidos">0</div>
+          <div class="estoque-col-label">Pedidos</div>
+        </div>
+        <button class="btn-estoque-edit" onclick="editEstoque('PQ')">✏️</button>
+      </div>
+    </div>
+    <div class="estoque-item">
+      <div>
+        <div class="estoque-label">GD <span style="font-weight:400;font-size:10px">40×30</span></div>
+      </div>
+      <div class="estoque-nums">
+        <div class="estoque-col">
+          <div class="estoque-val ok" id="estGdStock">0</div>
+          <div class="estoque-col-label">Estoque</div>
+        </div>
+        <div class="estoque-divider"></div>
+        <div class="estoque-col">
+          <div class="estoque-val blue" id="estGdPedidos">0</div>
+          <div class="estoque-col-label">Pedidos</div>
+        </div>
+        <button class="btn-estoque-edit" onclick="editEstoque('GD')">✏️</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="content active" id="tab-kanban">
@@ -504,6 +559,42 @@ const MONTHS_PT=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','
 const MONTHS_S=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const WARN_DAYS=3;
 
+// ESTOQUE
+const SIGLAS={PQ:/\bPQ\b/i, GD:/\bGD\b/i};
+function loadEstoque(){
+  return{PQ:parseInt(localStorage.getItem('est_PQ')||'0'),GD:parseInt(localStorage.getItem('est_GD')||'0')};
+}
+function countPedidosSigla(sigla){
+  const re=SIGLAS[sigla];
+  return orders.filter(o=>o.status!=='entregue'&&(
+    re.test(o.description||'')||re.test(o.notes||'')||
+    (o.items||[]).some(i=>re.test(i.desc||''))
+  )).length;
+}
+function renderEstoque(){
+  const est=loadEstoque();
+  ['PQ','GD'].forEach(s=>{
+    const stock=est[s];
+    const pedidos=countPedidosSigla(s);
+    const saldo=stock-pedidos;
+    const elStock=document.getElementById('est'+s+'Stock');
+    const elPed=document.getElementById('est'+s+'Pedidos');
+    elStock.textContent=stock;
+    elStock.className='estoque-val '+(saldo<=0&&stock>0?'danger':saldo<=2?'warn':'ok');
+    elPed.textContent=pedidos;
+  });
+}
+function editEstoque(sigla){
+  const atual=loadEstoque()[sigla];
+  const novo=prompt(`Estoque ${sigla} — quantos tem?`,atual);
+  if(novo===null)return;
+  const n=parseInt(novo);
+  if(isNaN(n)||n<0){showToast('⚠️ Valor inválido');return;}
+  localStorage.setItem('est_'+sigla,n);
+  renderEstoque();
+  showToast(`✅ Estoque ${sigla}: ${n} unidades`);
+}
+
 // THEME
 function toggleTheme(){
   const isLight=document.body.classList.toggle('light');
@@ -667,7 +758,7 @@ function renderKanban(){
     col.innerHTML=`<div class="col-header"><div class="col-title"><div class="col-dot" style="background:${st.color}"></div>${st.emoji} ${st.label}</div><div class="col-count">${group.length}</div></div><div class="cards">${cards}</div>`;
     board.appendChild(col);
   });
-  renderStats();renderAlerts();
+  renderStats();renderAlerts();renderEstoque();
 }
 
 // ITENS DO PEDIDO
