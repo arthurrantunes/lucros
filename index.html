@@ -512,7 +512,7 @@ function onNameInput(){
     list.classList.remove('show');return;
   }
   list.innerHTML=filtered.map(c=>`
-    <div class="ac-item" onclick="pickClient(${JSON.stringify(c.name)},${JSON.stringify(c.phone)})">
+    <div class="ac-item" onmousedown="pickClient(${JSON.stringify(c.name)},${JSON.stringify(c.phone)})">
       <div class="ac-name">${c.name}</div>
       <div class="ac-meta">${c.count} pedido(s) · ${fmtCur(c.total)} · ${c.phone||'sem telefone'}</div>
     </div>`).join('');
@@ -520,8 +520,10 @@ function onNameInput(){
 }
 
 function pickClient(name,phone){
-  document.getElementById('fName').value=name;
-  if(phone&&!document.getElementById('fPhone').value)document.getElementById('fPhone').value=phone;
+  const nameEl=document.getElementById('fName');
+  const phoneEl=document.getElementById('fPhone');
+  nameEl.value=name;
+  if(phone)phoneEl.value=phone;
   document.getElementById('acList').classList.remove('show');
   showClientCard(name);
 }
