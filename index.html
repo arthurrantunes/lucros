@@ -75,7 +75,14 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .alert-item-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
 
 .kanban{display:flex;flex-direction:column;gap:12px}
-.kanban-col{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+.kanban-col.col-orc{border-color:#f5c84230;background:linear-gradient(180deg,#f5c84208 0%,transparent 60px)}
+.kanban-col.col-prod{border-color:#4f8fff30;background:linear-gradient(180deg,#4f8fff08 0%,transparent 60px)}
+.kanban-col.col-pronto{border-color:#9b6dff30;background:linear-gradient(180deg,#9b6dff08 0%,transparent 60px)}
+.kanban-col.col-entregue{border-color:#25d36630;background:linear-gradient(180deg,#25d36608 0%,transparent 60px)}
+.kanban-col.col-orc .col-header{background:#f5c84210}
+.kanban-col.col-prod .col-header{background:#4f8fff10}
+.kanban-col.col-pronto .col-header{background:#9b6dff10}
+.kanban-col.col-entregue .col-header{background:#25d36610}
 .col-header{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
 .col-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
 .col-dot{width:8px;height:8px;border-radius:50%}
@@ -508,14 +515,24 @@ function onNameInput(){
   const clients=getUniqueClients();
   const filtered=val?clients.filter(c=>c.name.toLowerCase().includes(val)):clients.slice(0,6);
   const list=document.getElementById('acList');
-  if(!filtered.length||!val&&!document.getElementById('fName').matches(':focus')){
-    list.classList.remove('show');return;
-  }
-  list.innerHTML=filtered.map(c=>`
-    <div class="ac-item" onmousedown="event.preventDefault();pickClient(${JSON.stringify(c.name)},${JSON.stringify(c.phone)})" ontouchstart="event.preventDefault();pickClient(${JSON.stringify(c.name)},${JSON.stringify(c.phone)})">
+  if(!filtered.length){list.classList.remove('show');return}
+  list.innerHTML=filtered.map((c,i)=>`
+    <div class="ac-item" id="ac-${i}" style="cursor:pointer">
       <div class="ac-name">${c.name}</div>
       <div class="ac-meta">${c.count} pedido(s) · ${fmtCur(c.total)} · ${c.phone||'sem telefone'}</div>
     </div>`).join('');
+  filtered.forEach((c,i)=>{
+    const el=document.getElementById('ac-'+i);
+    ['click','touchend','mousedown'].forEach(ev=>{
+      el.addEventListener(ev,function(e){
+        e.preventDefault();e.stopPropagation();
+        document.getElementById('fName').value=c.name;
+        if(c.phone)document.getElementById('fPhone').value=c.phone;
+        list.classList.remove('show');
+        showClientCard(c.name);
+      });
+    });
+  });
   list.classList.add('show');
 }
 
@@ -612,7 +629,8 @@ function renderKanban(){
     const st=STATUSES[key];
     let group=orders.filter(o=>o.status===key);
     if(q)group=group.filter(o=>(o.name||'').toLowerCase().includes(q)||(o.description||'').toLowerCase().includes(q)||(o.notes||'').toLowerCase().includes(q));
-    const col=document.createElement('div');col.className='kanban-col';
+    const colColors={orcamento:'col-orc',producao:'col-prod',pronto:'col-pronto',entregue:'col-entregue'};
+    const col=document.createElement('div');col.className='kanban-col '+(colColors[key]||'');
     const cards=group.map(o=>{
       const pending=Math.max(0,(o.value||0)-(o.paid||0));
       const isPaid=pending===0&&(o.value||0)>0;
