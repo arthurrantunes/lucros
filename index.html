@@ -566,11 +566,12 @@ let estoqueData={PQ:0,GD:0};
 async function loadEstoqueFromDB(){
   try{
     const r=await sbFetch('config?select=*');
-    const rows=await r.json();
-    rows.forEach(row=>{
-      if(row.key==='est_PQ')estoqueData.PQ=parseInt(row.value)||0;
-      if(row.key==='est_GD')estoqueData.GD=parseInt(row.value)||0;
-    });
+    if(Array.isArray(r)){
+      r.forEach(row=>{
+        if(row.key==='est_PQ')estoqueData.PQ=parseInt(row.value)||0;
+        if(row.key==='est_GD')estoqueData.GD=parseInt(row.value)||0;
+      });
+    }
   }catch(e){console.log('estoque load error',e)}
   renderEstoque();
 }
@@ -1168,7 +1169,8 @@ async function init(){
   }
   document.getElementById('loadingScreen').style.display='none';
   renderKanban();
-  loadEstoqueFromDB();
+  loadEstoqueFromDB().catch(()=>renderEstoque());
+}
 
 init();
 </script>
