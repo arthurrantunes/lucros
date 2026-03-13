@@ -356,6 +356,22 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   </div>
 </div>
 
+<!-- MODAL ESTOQUE -->
+<div class="overlay" id="estOverlay" onclick="if(event.target===this)closeEstModal()">
+  <div class="modal" style="max-height:300px">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="estModalTitle">Estoque PQ</div>
+    <div class="form-group">
+      <label class="form-label">Quantidade em estoque</label>
+      <input class="form-input" id="estInput" type="number" min="0" placeholder="0" style="font-size:22px;text-align:center;font-weight:700" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEstModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveEstoque()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <div class="content active" id="tab-kanban">
   <div class="search-bar"><div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="searchInput" placeholder="Buscar cliente ou pedido..." oninput="renderKanban()" /></div></div>
   <div class="filter-status-wrap">
@@ -563,19 +579,6 @@ const WARN_DAYS=3;
 const SIGLAS={PQ:/\bPQ\b/i, GD:/\bGD\b/i};
 let estoqueData={PQ:0,GD:0};
 
-async function loadEstoqueFromDB(){
-  try{
-    const r=await sbFetch('config?select=*');
-    if(Array.isArray(r)){
-      r.forEach(row=>{
-        if(row.key==='est_PQ')estoqueData.PQ=parseInt(row.value)||0;
-        if(row.key==='est_GD')estoqueData.GD=parseInt(row.value)||0;
-      });
-    }
-  }catch(e){console.log('estoque load error',e)}
-  renderEstoque();
-}
-
 function countPedidosSigla(sigla){
   const re=SIGLAS[sigla];
   return orders.filter(o=>o.status!=='entregue'&&(
@@ -598,20 +601,30 @@ function renderEstoque(){
   });
 }
 
-async function editEstoque(sigla){
-  const atual=estoqueData[sigla]||0;
-  const novo=prompt(`Estoque ${sigla} — quantos tem?`,atual);
-  if(novo===null)return;
-  const n=parseInt(novo);
+let editEstoqueSigla=null;
+function editEstoque(sigla){
+  editEstoqueSigla=sigla;
+  document.getElementById('estModalTitle').textContent='Estoque '+sigla+(sigla==='PQ'?' (30×20)':' (40×30)');
+  document.getElementById('estInput').value=estoqueData[sigla]||0;
+  document.getElementById('estOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('estInput').focus(),300);
+}
+function closeEstModal(){document.getElementById('estOverlay').classList.remove('open')}
+function saveEstoque(){
+  const n=parseInt(document.getElementById('estInput').value);
   if(isNaN(n)||n<0){showToast('⚠️ Valor inválido');return;}
+  const sigla=editEstoqueSigla;
   estoqueData[sigla]=n;
+  localStorage.setItem('est_'+sigla,n);
   renderEstoque();
-  try{
-    // upsert na tabela config
-    await sbFetch('config?key=eq.est_'+sigla,{method:'DELETE',headers:{'Prefer':''}});
-    await sbFetch('config',{method:'POST',body:JSON.stringify({key:'est_'+sigla,value:String(n)})});
-    showToast(`✅ Estoque ${sigla}: ${n} unidades`);
-  }catch(e){showToast('❌ Erro ao salvar estoque')}
+  closeEstModal();
+  showToast(`✅ Estoque ${sigla}: ${n} unidades`);
+}
+
+function loadEstoqueFromDB(){
+  estoqueData.PQ=parseInt(localStorage.getItem('est_PQ')||'0');
+  estoqueData.GD=parseInt(localStorage.getItem('est_GD')||'0');
+  renderEstoque();
 }
 
 // THEME
