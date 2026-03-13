@@ -610,20 +610,33 @@ function editEstoque(sigla){
   setTimeout(()=>document.getElementById('estInput').focus(),300);
 }
 function closeEstModal(){document.getElementById('estOverlay').classList.remove('open')}
-function saveEstoque(){
+async function saveEstoque(){
   const n=parseInt(document.getElementById('estInput').value);
   if(isNaN(n)||n<0){showToast('⚠️ Valor inválido');return;}
   const sigla=editEstoqueSigla;
   estoqueData[sigla]=n;
-  localStorage.setItem('est_'+sigla,n);
   renderEstoque();
   closeEstModal();
-  showToast(`✅ Estoque ${sigla}: ${n} unidades`);
+  showToast(`✅ Estoque ${sigla}: ${n}`);
+  try{
+    await sbFetch('config',{
+      method:'POST',
+      headers:{'Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({key:'est_'+sigla,value:String(n)})
+    });
+  }catch(e){console.log('est save err',e)}
 }
 
-function loadEstoqueFromDB(){
-  estoqueData.PQ=parseInt(localStorage.getItem('est_PQ')||'0');
-  estoqueData.GD=parseInt(localStorage.getItem('est_GD')||'0');
+async function loadEstoqueFromDB(){
+  try{
+    const r=await sbFetch('config?select=*');
+    if(Array.isArray(r)){
+      r.forEach(row=>{
+        if(row.key==='est_PQ')estoqueData.PQ=parseInt(row.value)||0;
+        if(row.key==='est_GD')estoqueData.GD=parseInt(row.value)||0;
+      });
+    }
+  }catch(e){}
   renderEstoque();
 }
 
