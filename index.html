@@ -561,9 +561,20 @@ const WARN_DAYS=3;
 
 // ESTOQUE
 const SIGLAS={PQ:/\bPQ\b/i, GD:/\bGD\b/i};
-function loadEstoque(){
-  return{PQ:parseInt(localStorage.getItem('est_PQ')||'0'),GD:parseInt(localStorage.getItem('est_GD')||'0')};
+let estoqueData={PQ:0,GD:0};
+
+async function loadEstoqueFromDB(){
+  try{
+    const r=await sbFetch('config?select=*');
+    const rows=await r.json();
+    rows.forEach(row=>{
+      if(row.key==='est_PQ')estoqueData.PQ=parseInt(row.value)||0;
+      if(row.key==='est_GD')estoqueData.GD=parseInt(row.value)||0;
+    });
+  }catch(e){console.log('estoque load error',e)}
+  renderEstoque();
 }
+
 function countPedidosSigla(sigla){
   const re=SIGLAS[sigla];
   return orders.filter(o=>o.status!=='entregue'&&(
@@ -571,28 +582,35 @@ function countPedidosSigla(sigla){
     (o.items||[]).some(i=>re.test(i.desc||''))
   )).length;
 }
+
 function renderEstoque(){
-  const est=loadEstoque();
   ['PQ','GD'].forEach(s=>{
-    const stock=est[s];
+    const stock=estoqueData[s]||0;
     const pedidos=countPedidosSigla(s);
     const saldo=stock-pedidos;
     const elStock=document.getElementById('est'+s+'Stock');
     const elPed=document.getElementById('est'+s+'Pedidos');
+    if(!elStock)return;
     elStock.textContent=stock;
-    elStock.className='estoque-val '+(saldo<=0&&stock>0?'danger':saldo<=2?'warn':'ok');
+    elStock.className='estoque-val '+(stock>0&&saldo<=0?'danger':saldo<=2&&stock>0?'warn':'ok');
     elPed.textContent=pedidos;
   });
 }
-function editEstoque(sigla){
-  const atual=loadEstoque()[sigla];
+
+async function editEstoque(sigla){
+  const atual=estoqueData[sigla]||0;
   const novo=prompt(`Estoque ${sigla} — quantos tem?`,atual);
   if(novo===null)return;
   const n=parseInt(novo);
   if(isNaN(n)||n<0){showToast('⚠️ Valor inválido');return;}
-  localStorage.setItem('est_'+sigla,n);
+  estoqueData[sigla]=n;
   renderEstoque();
-  showToast(`✅ Estoque ${sigla}: ${n} unidades`);
+  try{
+    // upsert na tabela config
+    await sbFetch('config?key=eq.est_'+sigla,{method:'DELETE',headers:{'Prefer':''}});
+    await sbFetch('config',{method:'POST',body:JSON.stringify({key:'est_'+sigla,value:String(n)})});
+    showToast(`✅ Estoque ${sigla}: ${n} unidades`);
+  }catch(e){showToast('❌ Erro ao salvar estoque')}
 }
 
 // THEME
@@ -865,6 +883,7 @@ async function saveOrder(){
     value:parseMoney(document.getElementById('fValue').value),
     paid:parseMoney(document.getElementById('fPaid').value),
     cost:parseMoney(document.getElementById('fCost').value),
+    status:document.getElementById('fStatus').value,
     items:orderItems.filter(i=>i.desc).map(({desc,qty,price})=>({desc,qty:qty||1,price:price||0})),
     delivery_date:document.getElementById('fDelivery').value||null,
     notes:document.getElementById('fNotes').value.trim(),
@@ -1149,7 +1168,7 @@ async function init(){
   }
   document.getElementById('loadingScreen').style.display='none';
   renderKanban();
-}
+  loadEstoqueFromDB();
 
 init();
 </script>
