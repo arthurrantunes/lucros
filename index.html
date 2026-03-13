@@ -614,17 +614,17 @@ async function saveEstoque(){
   const n=parseInt(document.getElementById('estInput').value);
   if(isNaN(n)||n<0){showToast('⚠️ Valor inválido');return;}
   const sigla=editEstoqueSigla;
-  estoqueData[sigla]=n;
-  renderEstoque();
   closeEstModal();
-  showToast(`✅ Estoque ${sigla}: ${n}`);
   try{
     await sbFetch('config',{
       method:'POST',
       headers:{'Prefer':'resolution=merge-duplicates'},
       body:JSON.stringify({key:'est_'+sigla,value:String(n)})
     });
-  }catch(e){console.log('est save err',e)}
+    estoqueData[sigla]=n;
+    renderEstoque();
+    showToast(`✅ Estoque ${sigla}: ${n}`);
+  }catch(e){showToast('❌ Erro ao salvar estoque')}
 }
 
 async function loadEstoqueFromDB(){
