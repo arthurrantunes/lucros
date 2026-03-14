@@ -86,15 +86,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 /* ITENS DO PEDIDO */
 .items-section{margin-bottom:12px}
 .items-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
-.item-row{display:grid;grid-template-columns:1fr 60px 90px 32px;gap:6px;align-items:center}
-.item-row input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'Sora',sans-serif;font-size:12px;outline:none;width:100%}
+.item-row{display:grid;grid-template-columns:2fr 1fr 1fr 50px 80px 32px;gap:5px;align-items:center}
+.item-row input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 8px;color:var(--text);font-family:'Sora',sans-serif;font-size:12px;outline:none;width:100%}
 .item-row input:focus{border-color:var(--accent)}
+.item-row-header{display:grid;grid-template-columns:2fr 1fr 1fr 50px 80px 32px;gap:5px;margin-bottom:3px}
+.item-row-header span{font-size:10px;font-weight:700;color:var(--text2);padding:0 2px}
 .btn-rm-item{background:#ff4f6a18;color:var(--red);border:1px solid #ff4f6a30;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .btn-add-item{background:var(--surface2);border:1px dashed var(--border);border-radius:8px;padding:8px;font-size:12px;color:var(--text2);cursor:pointer;width:100%;text-align:center;font-family:'Sora',sans-serif}
 .btn-add-item:hover{border-color:var(--accent);color:var(--accent)}
 .items-total{font-size:12px;color:var(--text2);text-align:right;margin-top:4px}
 .items-total span{font-weight:700;color:var(--accent)}
-/* card items preview */
 .card-items{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
 .card-item-tag{font-size:10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;color:var(--text2)}
 .col-header{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
@@ -471,9 +472,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div id="clientCardRows"></div>
     </div>
     <div class="form-group"><label class="form-label">📱 WhatsApp</label><div class="phone-wrap"><span class="phone-flag">🇧🇷</span><input class="form-input" id="fPhone" type="tel" placeholder="(11) 99999-9999" oninput="formatPhone(this)" /></div></div>
-    <div class="form-group"><label class="form-label">📝 Descrição geral</label><input class="form-input" id="fDesc" placeholder="Ex: Pedido de uniformes" /></div>
     <div class="items-section">
       <label class="form-label">📦 Itens do Pedido</label>
+      <div class="item-row-header"><span>Item</span><span>Tamanho</span><span>Cor</span><span>Qtd</span><span>Preço</span><span></span></div>
       <div class="items-list" id="itemsList"></div>
       <button class="btn-add-item" onclick="addItemRow()">+ Adicionar item</button>
       <div class="items-total" id="itemsTotal"></div>
@@ -814,7 +815,7 @@ function renderKanban(){
       if(o.delivery_date&&o.status!=='entregue'){const d=daysUntil(o.delivery_date);if(d<0){alertClass='alert-danger';delivBadge=`<span class="badge badge-date-danger">⛔ Atrasado ${Math.abs(d)}d</span>`}else if(d===0){alertClass='alert-danger';delivBadge=`<span class="badge badge-date-danger">🔴 Hoje</span>`}else if(d<=WARN_DAYS){alertClass='alert-warning';delivBadge=`<span class="badge badge-date-warn">⚠️ ${d}d</span>`}else{delivBadge=`<span class="badge badge-date-ok">🚚 ${fmtDate(o.delivery_date)}</span>`}}else if(o.delivery_date){delivBadge=`<span class="badge badge-date-ok">🚚 ${fmtDate(o.delivery_date)}</span>`}
       const createdBadge=o.created_at?`<span class="badge badge-created">📌 ${fmtDate(createdIso(o.created_at))}</span>`:'';
       const wppBtn=o.phone?`<button class="btn-wpp" onclick="event.stopPropagation();openWpp('${o.id}')">💬 WPP</button>`:'';
-      const itemsTags=o.items&&o.items.length?`<div class="card-items">${o.items.map(i=>`<span class="card-item-tag">${i.qty}× ${i.desc}${i.price?` · ${fmtCur(i.price*i.qty)}`:''}</span>`).join('')}</div>`:'';
+      const itemsTags=o.items&&o.items.length?`<div class="card-items">${o.items.map(i=>{const label=[i.desc,i.size,i.color].filter(Boolean).join(' ');return `<span class="card-item-tag">${i.qty}× ${label}${i.price?` · ${fmtCur(i.price*i.qty)}`:''}</span>`}).join('')}</div>`:'';
       return `<div class="card ${alertClass}" onclick="openEditOrder('${o.id}')"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">${o.name}</div>${o.description?`<div class="card-desc">${o.description}</div>`:''}</div><div class="card-value">${fmtCur(o.value||0)}</div></div>${itemsTags}<div class="card-badges">${payBadge}${createdBadge}${delivBadge}${costBadge}</div><div class="card-footer"><div class="card-note">${o.notes||''}</div><div class="card-actions">${wppBtn}<button class="btn-edit" onclick="event.stopPropagation();openEditOrder('${o.id}')">✏️</button></div></div></div>`;
     }).join('')||'<div class="empty-col">Nenhum pedido</div>';
     col.innerHTML=`<div class="col-header"><div class="col-title"><div class="col-dot" style="background:${st.color}"></div>${st.emoji} ${st.label}</div><div class="col-count">${group.length}</div></div><div class="cards">${cards}</div>`;
@@ -836,13 +837,20 @@ function removeItemRow(id){
 }
 function renderItemsList(){
   const list=document.getElementById('itemsList');
-  list.innerHTML=orderItems.map(item=>`
+  // autocomplete de nomes de produtos cadastrados
+  const prodNames=produtos.map(p=>p.name);
+  list.innerHTML=orderItems.map(item=>{
+    const opts=prodNames.length?`<datalist id="dl-${item.id}">${prodNames.map(n=>`<option value="${n}">`).join('')}</datalist>`:'';
+    return `${opts}
     <div class="item-row">
-      <input placeholder="Descrição" value="${item.desc||''}" oninput="updateItem('${item.id}','desc',this.value)" />
-      <input placeholder="Qtd" type="number" min="1" value="${item.qty||1}" oninput="updateItem('${item.id}','qty',this.value)" style="text-align:center" />
+      <input placeholder="Item" value="${item.desc||''}" list="dl-${item.id}" oninput="updateItem('${item.id}','desc',this.value)" />
+      <input placeholder="Tam." value="${item.size||''}" oninput="updateItem('${item.id}','size',this.value)" />
+      <input placeholder="Cor" value="${item.color||''}" oninput="updateItem('${item.id}','color',this.value)" />
+      <input type="number" min="1" value="${item.qty||1}" oninput="updateItem('${item.id}','qty',this.value)" style="text-align:center" />
       <input placeholder="R$ 0,00" value="${item.price?fmtCur(item.price):''}" oninput="formatMoneyItem(this,'${item.id}')" />
       <button class="btn-rm-item" onclick="removeItemRow('${item.id}')">×</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   updateItemsTotal();
 }
 function updateItem(id,field,val){
@@ -870,7 +878,7 @@ function openNewOrder(){
   editOrderId=null;
   orderItems=[];
   document.getElementById('orderModalTitle').textContent='Novo Pedido';
-  ['fName','fPhone','fDesc','fValue','fPaid','fCost','fNotes'].forEach(id=>document.getElementById(id).value='');
+  ['fName','fPhone','fValue','fPaid','fCost','fNotes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fValue').dataset.manual='';
   document.getElementById('fStatus').value='orcamento';
   document.getElementById('fDelivery').value='';
@@ -886,7 +894,7 @@ function openEditOrder(id){
   document.getElementById('orderModalTitle').textContent='Editar Pedido';
   document.getElementById('fName').value=o.name||'';
   document.getElementById('fPhone').value=o.phone||'';
-  document.getElementById('fDesc').value=o.description||'';
+  // description kept for legacy orders
   document.getElementById('fValue').value=o.value?fmtCur(o.value):'';
   document.getElementById('fPaid').value=o.paid?fmtCur(o.paid):'';
   document.getElementById('fCost').value=o.cost?fmtCur(o.cost):'';
@@ -923,12 +931,12 @@ async function saveOrder(){
   const o={
     id:editOrderId||Date.now().toString(),
     name, phone:document.getElementById('fPhone').value.trim(),
-    description:document.getElementById('fDesc').value.trim(),
+    description:'',
     value:parseMoney(document.getElementById('fValue').value),
     paid:parseMoney(document.getElementById('fPaid').value),
     cost:parseMoney(document.getElementById('fCost').value),
     status:document.getElementById('fStatus').value,
-    items:orderItems.filter(i=>i.desc).map(({desc,qty,price})=>({desc,qty:qty||1,price:price||0})),
+    items:orderItems.filter(i=>i.desc).map(({desc,size,color,qty,price})=>({desc,size:size||'',color:color||'',qty:qty||1,price:price||0})),
     delivery_date:document.getElementById('fDelivery').value||null,
     notes:document.getElementById('fNotes').value.trim(),
     created_at:prev?prev.created_at:Date.now()
@@ -1097,18 +1105,27 @@ async function deleteProd(){
 }
 
 function buildRanking(){
-  // Conta quantas vezes cada produto aparece nos pedidos (match por nome)
   const counts={};
   const revenue={};
   orders.forEach(o=>{
-    const desc=(o.description||'').toLowerCase().trim();
-    if(!desc)return;
-    // tenta match com produtos cadastrados
-    let matched=null;
-    produtos.forEach(p=>{if(desc.includes(p.name.toLowerCase()))matched=p.name});
-    const key=matched||desc;
-    counts[key]=(counts[key]||0)+1;
-    revenue[key]=(revenue[key]||0)+(o.value||0);
+    if(o.items&&o.items.length){
+      // usa itens com item+tamanho como chave
+      o.items.forEach(i=>{
+        if(!i.desc)return;
+        const key=[i.desc,i.size].filter(Boolean).join(' ');
+        counts[key]=(counts[key]||0)+(i.qty||1);
+        revenue[key]=(revenue[key]||0)+(i.price||0)*(i.qty||1);
+      });
+    } else {
+      // pedidos antigos sem itens — usa descrição
+      const desc=(o.description||'').toLowerCase().trim();
+      if(!desc)return;
+      let matched=null;
+      produtos.forEach(p=>{if(desc.includes(p.name.toLowerCase()))matched=p.name});
+      const key=matched||desc;
+      counts[key]=(counts[key]||0)+1;
+      revenue[key]=(revenue[key]||0)+(o.value||0);
+    }
   });
   return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([name,count])=>({name,count,revenue:revenue[name]||0}));
 }
