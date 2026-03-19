@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0059)file:///C:/Users/ArthurAntunes/Downloads/pedidos-app_3.html -->
+<!-- saved from url=(0059)file:///C:/Users/ArthurAntunes/Downloads/pedidos-app_4.html -->
 <html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -74,7 +74,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .alert-item-name{color:var(--text);font-weight:600}
 .alert-item-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
 
-.kanban{display:flex;flex-direction:column;gap:12px}
+.kanban{display:flex;flex-direction:row;gap:10px;overflow-x:auto;align-items:flex-start;padding-bottom:12px}
+.kanban::-webkit-scrollbar{height:4px}
+.kanban::-webkit-scrollbar-track{background:var(--surface2);border-radius:2px}
+.kanban::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.kanban-col{min-width:260px;flex:1}
 .kanban-col.col-orc{border-left:4px solid #f5c842;background:linear-gradient(180deg,#f5c84214 0%,transparent 80px)}
 .kanban-col.col-prod{border-left:4px solid #4f8fff;background:linear-gradient(180deg,#4f8fff14 0%,transparent 80px)}
 .kanban-col.col-pronto{border-left:4px solid #9b6dff;background:linear-gradient(180deg,#9b6dff14 0%,transparent 80px)}
@@ -522,7 +526,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="msg-templates" id="msgTemplates"></div>
     <div class="sec-label">Ou escreva sua mensagem</div>
     <textarea class="msg-area" id="customMsg" placeholder="Digite uma mensagem..."></textarea>
-    <a class="btn-wpp-send" id="wppSendBtn" href="file:///C:/Users/ArthurAntunes/Downloads/pedidos-app_3.html#" target="_blank">📲 Abrir no WhatsApp</a>
+    <a class="btn-wpp-send" id="wppSendBtn" href="file:///C:/Users/ArthurAntunes/Downloads/pedidos-app_4.html#" target="_blank">📲 Abrir no WhatsApp</a>
   </div>
 </div>
 
