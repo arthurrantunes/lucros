@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0059)file:///C:/Users/ArthurAntunes/Downloads/pedidos-app_4.html -->
-<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pedidos">
 <title>Controle de Pedidos</title>
-<link href="./index_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2e2e3e;--text:#f0f0f8;--text2:#8888aa;--accent:#25d366;--accent2:#128c7e;--yellow:#f5c842;--red:#ff4f6a;--blue:#4f8fff;--purple:#9b6dff;--orange:#ff8c42;--radius:14px}
 body.light{--bg:#f0f2f5;--surface:#ffffff;--surface2:#eef0f4;--border:#dde1e9;--text:#1a1a2e;--text2:#6b7280;--accent:#1aab52;--accent2:#128c7e}
@@ -288,9 +288,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 @keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(8px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
 </style>
 </head>
-<body class="light">
+<body>
 
-<div class="loading-screen" id="loadingScreen" style="display: none;">
+<div class="loading-screen" id="loadingScreen">
   <div class="loading-logo">📦</div>
   <div class="spinner"></div>
   <div class="loading-text">Carregando dados...</div>
@@ -299,26 +299,26 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 <div class="header">
   <div class="header-left">
     <div class="logo">📦</div>
-    <div><h1>Pedidos</h1><p id="headerDate">qui., 19 de mar.</p></div>
+    <div><h1>Pedidos</h1><p id="headerDate"></p></div>
   </div>
   <div class="header-right">
     <div class="sync-indicator"><div class="sync-dot" id="syncDot"></div><span id="syncText">online</span></div>
-    <button class="btn-theme" onclick="toggleTheme()" id="btnTheme">🌞</button>
+    <button class="btn-theme" onclick="toggleTheme()" id="btnTheme">🌙</button>
     <button class="btn-new" id="mainBtn" onclick="handleMain()">+ Novo</button>
   </div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab(&#39;kanban&#39;,this)">📋 Pedidos</div>
-  <div class="tab" onclick="switchTab(&#39;despesas&#39;,this)">💸 Despesas</div>
-  <div class="tab" onclick="switchTab(&#39;produtos&#39;,this)">🛍 Produtos</div>
-  <div class="tab" onclick="switchTab(&#39;financeiro&#39;,this)">💰 Financeiro</div>
+  <div class="tab active" onclick="switchTab('kanban',this)">📋 Pedidos</div>
+  <div class="tab" onclick="switchTab('despesas',this)">💸 Despesas</div>
+  <div class="tab" onclick="switchTab('produtos',this)">🛍 Produtos</div>
+  <div class="tab" onclick="switchTab('financeiro',this)">💰 Financeiro</div>
 </div>
 
 <div class="stats-bar">
-  <div class="stat"><div class="stat-value" id="stTotal">15</div><div class="stat-label">Pedidos</div></div>
-  <div class="stat"><div class="stat-value yellow" id="stPend">R$ 0,00</div><div class="stat-label">A Receber</div></div>
-  <div class="stat"><div class="stat-value" id="stRec">R$ 2419,90</div><div class="stat-label">Recebido</div></div>
+  <div class="stat"><div class="stat-value" id="stTotal">0</div><div class="stat-label">Pedidos</div></div>
+  <div class="stat"><div class="stat-value yellow" id="stPend">R$0</div><div class="stat-label">A Receber</div></div>
+  <div class="stat"><div class="stat-value" id="stRec">R$0</div><div class="stat-label">Recebido</div></div>
 </div>
 
 <div class="estoque-bar">
@@ -330,15 +330,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       </div>
       <div class="estoque-nums">
         <div class="estoque-col">
-          <div class="estoque-val ok" id="estPqStock">5</div>
+          <div class="estoque-val ok" id="estPqStock">0</div>
           <div class="estoque-col-label">Estoque</div>
         </div>
         <div class="estoque-divider"></div>
         <div class="estoque-col">
-          <div class="estoque-val blue" id="estPqPedidos">2</div>
+          <div class="estoque-val blue" id="estPqPedidos">0</div>
           <div class="estoque-col-label">Pedidos</div>
         </div>
-        <button class="btn-estoque-edit" onclick="editEstoque(&#39;PQ&#39;)">✏️</button>
+        <button class="btn-estoque-edit" onclick="editEstoque('PQ')">✏️</button>
       </div>
     </div>
     <div class="estoque-item">
@@ -347,15 +347,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       </div>
       <div class="estoque-nums">
         <div class="estoque-col">
-          <div class="estoque-val warn" id="estGdStock">4</div>
+          <div class="estoque-val ok" id="estGdStock">0</div>
           <div class="estoque-col-label">Estoque</div>
         </div>
         <div class="estoque-divider"></div>
         <div class="estoque-col">
-          <div class="estoque-val blue" id="estGdPedidos">2</div>
+          <div class="estoque-val blue" id="estGdPedidos">0</div>
           <div class="estoque-col-label">Pedidos</div>
         </div>
-        <button class="btn-estoque-edit" onclick="editEstoque(&#39;GD&#39;)">✏️</button>
+        <button class="btn-estoque-edit" onclick="editEstoque('GD')">✏️</button>
       </div>
     </div>
   </div>
@@ -368,7 +368,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="modal-title" id="estModalTitle">Estoque PQ</div>
     <div class="form-group">
       <label class="form-label">Quantidade em estoque</label>
-      <input class="form-input" id="estInput" type="number" min="0" placeholder="0" style="font-size:22px;text-align:center;font-weight:700">
+      <input class="form-input" id="estInput" type="number" min="0" placeholder="0" style="font-size:22px;text-align:center;font-weight:700" />
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeEstModal()">Cancelar</button>
@@ -378,16 +378,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 </div>
 
 <div class="content active" id="tab-kanban">
-  <div class="search-bar"><div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="searchInput" placeholder="Buscar cliente ou pedido..." oninput="renderKanban()"></div></div>
+  <div class="search-bar"><div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="searchInput" placeholder="Buscar cliente ou pedido..." oninput="renderKanban()" /></div></div>
   <div class="filter-status-wrap">
-    <div class="fs-chip active" onclick="setStatusFilter(&#39;todos&#39;,this)">Todos</div>
-    <div class="fs-chip" onclick="setStatusFilter(&#39;orcamento&#39;,this)">💬 Orçamento</div>
-    <div class="fs-chip" onclick="setStatusFilter(&#39;producao&#39;,this)">⚙️ Produção</div>
-    <div class="fs-chip" onclick="setStatusFilter(&#39;pronto&#39;,this)">✅ Pronto</div>
-    <div class="fs-chip" onclick="setStatusFilter(&#39;entregue&#39;,this)">🚚 Entregue</div>
+    <div class="fs-chip active" onclick="setStatusFilter('todos',this)">Todos</div>
+    <div class="fs-chip" onclick="setStatusFilter('orcamento',this)">💬 Orçamento</div>
+    <div class="fs-chip" onclick="setStatusFilter('producao',this)">⚙️ Produção</div>
+    <div class="fs-chip" onclick="setStatusFilter('pronto',this)">✅ Pronto</div>
+    <div class="fs-chip" onclick="setStatusFilter('entregue',this)">🚚 Entregue</div>
   </div>
-  <div class="alert-banner show" id="alertBanner"><div class="alert-banner-title">⚠️ Prazos críticos</div><div id="alertList"><div class="alert-item"><div><span class="alert-item-name">Leonardo</span> — </div><span class="alert-item-tag" style="background:#ff4f6a20;color:var(--red)">Atrasado 3d</span></div><div class="alert-item"><div><span class="alert-item-name">JONATHAN GOIS</span> — </div><span class="alert-item-tag" style="background:#ff4f6a20;color:var(--red)">Atrasado 3d</span></div></div></div>
-  <div class="kanban" id="kanbanBoard"><div class="kanban-col col-orc"><div class="col-header"><div class="col-title"><div class="col-dot" style="background:#9b6dff"></div>💬 Orçamento</div><div class="col-count">3</div></div><div class="cards"><div class="card " onclick="openEditOrder(&#39;1773944065482&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Leandro França </div></div><div class="card-value">R$ 89,90</div></div><div class="card-items"><span class="card-item-tag">1× Porta moedas  25cm Cinza  · R$ 89,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 19/03</span><span class="badge badge-date-ok">🚚 23/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773944065482&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773944065482&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1773922406353&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Wallace F42 </div></div><div class="card-value">R$ 149,90</div></div><div class="card-items"><span class="card-item-tag">1× PQ MN F42 30x20 · R$ 14,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 19/03</span><span class="badge badge-date-ok">🚚 30/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773922406353&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773922406353&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1773916024724&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Sousa </div></div><div class="card-value">R$ 54,80</div></div><div class="card-items"><span class="card-item-tag">1× Silhueta Nav de pedra 10cm · R$ 39,90</span><span class="card-item-tag">1× Brasão Eamce 10cm · R$ 14,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 19/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773916024724&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773916024724&#39;)">✏️</button></div></div></div></div></div><div class="kanban-col col-prod"><div class="col-header"><div class="col-title"><div class="col-dot" style="background:#f5c842"></div>⚙️ Em Produção</div><div class="col-count">3</div></div><div class="cards"><div class="card " onclick="openEditOrder(&#39;1773916129540&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Rodrigo Sampaio </div></div><div class="card-value">R$ 149,90</div></div><div class="card-items"><span class="card-item-tag">1× PQ MN AERONÁUTICA  · R$ 149,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 19/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773916129540&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773916129540&#39;)">✏️</button></div></div></div><div class="card alert-danger" onclick="openEditOrder(&#39;1773431474584&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Leonardo </div></div><div class="card-value">R$ 199,90</div></div><div class="card-items"><span class="card-item-tag">1× GD MN  CIAA 40x20 · R$ 199,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 13/03</span><span class="badge badge-date-danger">⛔ Atrasado 3d</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773431474584&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773431474584&#39;)">✏️</button></div></div></div><div class="card alert-danger" onclick="openEditOrder(&#39;1773431186314&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">JONATHAN GOIS </div></div><div class="card-value">R$ 199,90</div></div><div class="card-items"><span class="card-item-tag">1× GD LN CIAA CIAA · R$ 199,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 13/03</span><span class="badge badge-date-danger">⛔ Atrasado 3d</span></div><div class="card-footer"><div class="card-note">Ao CC (AA) Paulo Roberto,  Uma singela homenagem do Departamento de Serviços Gerais, pelo excelente trabalho e pela  dedicação demonstrados à Família DSG e ao CIAA. Durante o período em que esteve conosco, o senhor deixou sua marca por meio do profissionalismo, comprometimento e espírito de equipe, contribuindo significativamente para o trabalho e fortalecimento deste Centro de Instrução. Sua competência, postura e liderança certamente continuarão a fazer a diferença em sua carreira. Desejamos-lhe muito sucesso nesta nova etapa, que seja repleta de conquistas e novos desafios. Receba nossa homenagem e agradecimento por tudo que fez por esse Departamento.  "AQUI NOS FAZEMOS O IMPOSSÍVEL, O MILAGRE DEMORA UM POUCO MAIS."</div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773431186314&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773431186314&#39;)">✏️</button></div></div></div></div></div><div class="kanban-col col-pronto"><div class="col-header"><div class="col-title"><div class="col-dot" style="background:#4f8fff"></div>✅ Pronto</div><div class="col-count">0</div></div><div class="cards"><div class="empty-col">Nenhum pedido</div></div></div><div class="kanban-col col-entregue"><div class="col-header"><div class="col-title"><div class="col-dot" style="background:#25d366"></div>🚚 Entregue</div><div class="col-count">9</div></div><div class="cards"><div class="card " onclick="openEditOrder(&#39;1773523481109&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Danilo </div></div><div class="card-value">R$ 120,00</div></div><div class="card-items"><span class="card-item-tag">2× Porta Moedas  20cm azul · R$ 120,00</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 14/03</span><span class="badge badge-date-ok">🚚 16/03</span></div><div class="card-footer"><div class="card-note">Dinei EL Danilo MO com Breve de superficie</div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773523481109&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773523481109&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1773431795780&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Helvio </div></div><div class="card-value">R$ 149,90</div></div><div class="card-items"><span class="card-item-tag">1× PQ MN PNN · R$ 149,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 13/03</span><span class="badge badge-date-ok">🚚 16/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773431795780&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773431795780&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1773431659090&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">NINIVER </div></div><div class="card-value">R$ 149,90</div></div><div class="card-items"><span class="card-item-tag">1× PQ MN EN 1 · R$ 149,90</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 13/03</span><span class="badge badge-date-ok">🚚 15/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773431659090&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773431659090&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1773431378371&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Alírio </div></div><div class="card-value">R$ 75,50</div></div><div class="card-items"><span class="card-item-tag">10× CHAVEIROS · R$ 75,50</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 13/03</span><span class="badge badge-date-ok">🚚 16/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1773431378371&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1773431378371&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1772937518931&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">AILJAN ALMEIDA </div></div><div class="card-value">R$ 64,90</div></div><div class="card-items"><span class="card-item-tag">1× PORTA  MOEDAS 20cm AZUL · R$ 60,00</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 08/03</span><span class="badge badge-date-ok">🚚 08/03</span><span class="badge badge-cost">💡 R$ 32,90</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1772937518931&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1772937518931&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1772910938242&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Pedro </div></div><div class="card-value">R$ 150,00</div></div><div class="card-items"><span class="card-item-tag">1× PQ MN H11</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 07/03</span><span class="badge badge-date-ok">🚚 09/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1772910938242&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1772910938242&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1772910817648&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Helvio </div></div><div class="card-value">R$ 150,00</div></div><div class="card-items"><span class="card-item-tag">1× PQ MN PNN</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 07/03</span><span class="badge badge-date-ok">🚚 23/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1772910817648&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1772910817648&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1772910507919&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Alexandre Lima </div></div><div class="card-value">R$ 129,90</div></div><div class="card-items"><span class="card-item-tag">1× PORTA MOEDAS  15CM AZUL · R$ 60,00</span><span class="card-item-tag">1× PORTA MOEDAS 15CM AZUL · R$ 40,00</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 07/03</span><span class="badge badge-date-ok">🚚 11/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1772910507919&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1772910507919&#39;)">✏️</button></div></div></div><div class="card " onclick="openEditOrder(&#39;1772910361541&#39;)"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-name">Iohan </div></div><div class="card-value">R$ 570,00</div></div><div class="card-items"><span class="card-item-tag">2× GD LN · R$ 570,00</span></div><div class="card-badges"><span class="badge" style="background:#25d36618;color:var(--accent)">💚 Pago</span><span class="badge badge-created">📌 07/03</span><span class="badge badge-date-ok">🚚 16/03</span></div><div class="card-footer"><div class="card-note"></div><div class="card-actions"><button class="btn-wpp" onclick="event.stopPropagation();openWpp(&#39;1772910361541&#39;)">💬 WPP</button><button class="btn-edit" onclick="event.stopPropagation();openEditOrder(&#39;1772910361541&#39;)">✏️</button></div></div></div></div></div></div>
+  <div class="alert-banner" id="alertBanner"><div class="alert-banner-title">⚠️ Prazos críticos</div><div id="alertList"></div></div>
+  <div class="kanban" id="kanbanBoard"></div>
 </div>
 
 <div class="content" id="tab-despesas">
@@ -395,20 +395,30 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="exp-sum-card"><div class="exp-sum-val" style="color:var(--red)" id="expTotal">R$0,00</div><div class="exp-sum-label">Total Gasto</div></div>
     <div class="exp-sum-card"><div class="exp-sum-val" style="color:var(--orange)" id="expMonth">R$0,00</div><div class="exp-sum-label">Este Mês</div></div>
   </div>
+  <div id="gmailSection" style="margin-bottom:12px">
+    <div id="gmailConnect" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:13px;font-weight:700">📧 Importar do Gmail</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">Detecta compras do ML e Shopee</div>
+      </div>
+      <button onclick="connectGmail()" id="btnGmail" style="background:var(--blue);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-family:'Sora',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Conectar</button>
+    </div>
+    <div id="gmailDetected" style="display:none;margin-top:8px"></div>
+  </div>
   <div class="exp-filters">
-    <div class="filter-chip active" onclick="setExpFilter(&#39;todos&#39;,this)">Todos</div>
-    <div class="filter-chip" onclick="setExpFilter(&#39;filamento&#39;,this)">🧵 Filamento</div>
-    <div class="filter-chip" onclick="setExpFilter(&#39;embalagem&#39;,this)">📦 Embalagem</div>
-    <div class="filter-chip" onclick="setExpFilter(&#39;outros&#39;,this)">📋 Outros</div>
+    <div class="filter-chip active" onclick="setExpFilter('todos',this)">Todos</div>
+    <div class="filter-chip" onclick="setExpFilter('filamento',this)">🧵 Filamento</div>
+    <div class="filter-chip" onclick="setExpFilter('embalagem',this)">📦 Embalagem</div>
+    <div class="filter-chip" onclick="setExpFilter('outros',this)">📋 Outros</div>
   </div>
   <div class="exp-list" id="expList"></div>
 </div>
 
 <div class="content" id="tab-financeiro">
   <div class="year-nav">
-    <button class="year-nav-btn" onclick="changeYear(-1)">‹</button>
+    <button class="year-nav-btn" onclick="changeYear(-1)">&#8249;</button>
     <div style="text-align:center"><div class="year-label" id="yearLabel">2025</div><div class="year-sub" id="yearSub">—</div></div>
-    <button class="year-nav-btn" onclick="changeYear(1)">›</button>
+    <button class="year-nav-btn" onclick="changeYear(1)">&#8250;</button>
   </div>
   <div class="year-cards">
     <div class="year-card"><div class="year-card-val" id="yReceita" style="color:var(--accent)">R$0</div><div class="year-card-label">Receita</div></div>
@@ -423,9 +433,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   </div>
   <div style="height:1px;background:var(--border);margin:4px 0 14px"></div>
   <div class="month-nav">
-    <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+    <button class="month-nav-btn" onclick="changeMonth(-1)">&#8249;</button>
     <div><div class="month-label" id="monthLabel">—</div><div class="month-sub" id="monthSub">—</div></div>
-    <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
+    <button class="month-nav-btn" onclick="changeMonth(1)">&#8250;</button>
   </div>
   <div class="month-cards">
     <div class="month-card"><div class="month-card-val" id="mReceita" style="color:var(--accent)">R$0</div><div class="month-card-label">Receita</div></div>
@@ -467,7 +477,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="form-group">
       <label class="form-label">👤 Nome do Cliente</label>
       <div class="autocomplete-wrap">
-        <input class="form-input" id="fName" placeholder="Ex: João Silva" autocomplete="off" oninput="onNameInput()" onfocus="onNameInput()">
+        <input class="form-input" id="fName" placeholder="Ex: João Silva" autocomplete="off" oninput="onNameInput()" onfocus="onNameInput()" />
         <div class="autocomplete-list" id="acList"></div>
       </div>
     </div>
@@ -475,7 +485,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="client-card-title">👤 Histórico do cliente</div>
       <div id="clientCardRows"></div>
     </div>
-    <div class="form-group"><label class="form-label">📱 WhatsApp</label><div class="phone-wrap"><span class="phone-flag">🇧🇷</span><input class="form-input" id="fPhone" type="tel" placeholder="(11) 99999-9999" oninput="formatPhone(this)"></div></div>
+    <div class="form-group"><label class="form-label">📱 WhatsApp</label><div class="phone-wrap"><span class="phone-flag">🇧🇷</span><input class="form-input" id="fPhone" type="tel" placeholder="(11) 99999-9999" oninput="formatPhone(this)" /></div></div>
     <div class="items-section">
       <label class="form-label">📦 Itens do Pedido</label>
       <div class="item-row-header"><span>Item</span><span>Tamanho</span><span>Cor</span><span>Qtd</span><span>Preço</span><span></span></div>
@@ -484,19 +494,19 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="items-total" id="itemsTotal"></div>
     </div>
     <div class="form-row" style="margin-bottom:12px">
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">💰 Valor Total</label><input class="form-input" id="fValue" placeholder="R$ 0,00" oninput="formatMoney(this)"></div>
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">✅ Valor Pago</label><input class="form-input" id="fPaid" placeholder="R$ 0,00" oninput="formatMoney(this)"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">💰 Valor Total</label><input class="form-input" id="fValue" placeholder="R$ 0,00" oninput="formatMoney(this)" /></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">✅ Valor Pago</label><input class="form-input" id="fPaid" placeholder="R$ 0,00" oninput="formatMoney(this)" /></div>
     </div>
     <div class="form-row" style="margin-bottom:12px">
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">🧵 Custo de Produção</label><input class="form-input" id="fCost" placeholder="R$ 0,00" oninput="formatMoney(this)"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">🧵 Custo de Produção</label><input class="form-input" id="fCost" placeholder="R$ 0,00" oninput="formatMoney(this)" /></div>
       <div class="form-group" style="margin-bottom:0"><label class="form-label">📌 Status</label><select class="form-select" id="fStatus"><option value="orcamento">💬 Orçamento</option><option value="producao">⚙️ Em Produção</option><option value="pronto">✅ Pronto</option><option value="entregue">🚚 Entregue</option></select></div>
     </div>
     <div class="form-row" style="margin-bottom:12px">
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">📅 Data de Entrega</label><input class="form-input" id="fDelivery" type="date" oninput="updateDatePreview()"></div>
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">🕐 Criado em</label><input class="form-input" id="fCreated" type="date" readonly=""></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">📅 Data de Entrega</label><input class="form-input" id="fDelivery" type="date" oninput="updateDatePreview()" /></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">🕐 Criado em</label><input class="form-input" id="fCreated" type="date" readonly /></div>
     </div>
     <div class="date-info" id="dateInfo"><div class="date-info-label" id="dateInfoLabel">—</div><div class="date-info-val" id="dateInfoVal">—</div></div>
-    <div class="form-group"><label class="form-label">📋 Observações</label><input class="form-input" id="fNotes" placeholder="Anotações extras..."></div>
+    <div class="form-group"><label class="form-label">📋 Observações</label><input class="form-input" id="fNotes" placeholder="Anotações extras..." /></div>
     <div class="modal-actions"><button class="btn-cancel" onclick="closeOrderModal()">Cancelar</button><button class="btn-save" onclick="saveOrder()">Salvar</button></div>
     <button class="btn-delete" id="btnOrderDelete" style="display:none" onclick="deleteOrder()">🗑 Excluir Pedido</button>
   </div>
@@ -507,18 +517,18 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="expModalTitle">Nova Despesa</div>
-    <div class="form-group"><label class="form-label">📝 Descrição</label><input class="form-input" id="eName" placeholder="Ex: Filamento PLA 1kg"></div>
+    <div class="form-group"><label class="form-label">📝 Descrição</label><input class="form-input" id="eName" placeholder="Ex: Filamento PLA 1kg" /></div>
     <div class="form-group"><label class="form-label">🗂 Categoria</label><select class="form-select" id="eCat"><option value="filamento">🧵 Filamento / Material</option><option value="embalagem">📦 Embalagem</option><option value="outros">📋 Outros</option></select></div>
-    <div class="form-group"><label class="form-label">💸 Valor</label><input class="form-input" id="eValue" placeholder="R$ 0,00" oninput="formatMoney(this)"></div>
-    <div class="form-group"><label class="form-label">📅 Data</label><input class="form-input" id="eDate" type="date"></div>
-    <div class="form-group"><label class="form-label">📋 Observações</label><input class="form-input" id="eNotes" placeholder="Opcional..."></div>
+    <div class="form-group"><label class="form-label">💸 Valor</label><input class="form-input" id="eValue" placeholder="R$ 0,00" oninput="formatMoney(this)" /></div>
+    <div class="form-group"><label class="form-label">📅 Data</label><input class="form-input" id="eDate" type="date" /></div>
+    <div class="form-group"><label class="form-label">📋 Observações</label><input class="form-input" id="eNotes" placeholder="Opcional..." /></div>
     <div class="modal-actions"><button class="btn-cancel" onclick="closeExpModal()">Cancelar</button><button class="btn-save orange" onclick="saveExp()">Salvar</button></div>
     <button class="btn-delete" id="btnExpDelete" style="display:none" onclick="deleteExp()">🗑 Excluir Despesa</button>
   </div>
 </div>
 
 <!-- WPP MODAL -->
-<div class="overlay" id="wppOverlay" onclick="if(event.target===this)document.getElementById(&#39;wppOverlay&#39;).classList.remove(&#39;open&#39;)">
+<div class="overlay" id="wppOverlay" onclick="if(event.target===this)document.getElementById('wppOverlay').classList.remove('open')">
   <div class="wpp-modal">
     <div class="modal-handle"></div>
     <div class="wpp-head"><div class="wpp-icon-box">💬</div><div><div class="wpp-cname" id="wppCname">—</div><div class="wpp-phone" id="wppCphone">—</div></div></div>
@@ -526,7 +536,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="msg-templates" id="msgTemplates"></div>
     <div class="sec-label">Ou escreva sua mensagem</div>
     <textarea class="msg-area" id="customMsg" placeholder="Digite uma mensagem..."></textarea>
-    <a class="btn-wpp-send" id="wppSendBtn" href="file:///C:/Users/ArthurAntunes/Downloads/pedidos-app_4.html#" target="_blank">📲 Abrir no WhatsApp</a>
+    <a class="btn-wpp-send" id="wppSendBtn" href="#" target="_blank">📲 Abrir no WhatsApp</a>
   </div>
 </div>
 
@@ -535,18 +545,122 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="prodModalTitle">Novo Produto</div>
-    <div class="form-group"><label class="form-label">📦 Nome do Produto</label><input class="form-input" id="pName" placeholder="Ex: Quadro Navio Graça Aranha"></div>
+    <div class="form-group"><label class="form-label">📦 Nome do Produto</label><input class="form-input" id="pName" placeholder="Ex: Quadro Navio Graça Aranha" /></div>
     <div class="form-row" style="margin-bottom:12px">
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">😀 Emoji</label><input class="form-input" id="pEmoji" placeholder="🖼" maxlength="2" style="font-size:22px;text-align:center"></div>
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">💰 Preço Padrão</label><input class="form-input" id="pPrice" placeholder="R$ 0,00" oninput="formatMoney(this)"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">😀 Emoji</label><input class="form-input" id="pEmoji" placeholder="🖼" maxlength="2" style="font-size:22px;text-align:center" /></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">💰 Preço Padrão</label><input class="form-input" id="pPrice" placeholder="R$ 0,00" oninput="formatMoney(this)" /></div>
     </div>
-    <div class="form-group"><label class="form-label">📋 Observações</label><input class="form-input" id="pNotes" placeholder="Tamanho, material, etc."></div>
+    <div class="form-group"><label class="form-label">📋 Observações</label><input class="form-input" id="pNotes" placeholder="Tamanho, material, etc." /></div>
     <div class="modal-actions"><button class="btn-cancel" onclick="closeProdModal()">Cancelar</button><button class="btn-save" style="background:var(--purple)" onclick="saveProd()">Salvar</button></div>
     <button class="btn-delete" id="btnProdDelete" style="display:none" onclick="deleteProd()">🗑 Excluir Produto</button>
   </div>
 </div>
 
+<script src="https://accounts.google.com/gsi/client" async></script>
 <script>
+const GMAIL_CLIENT_ID='354131934742-77jsipcu4m36pob98hgcik05hvn95pc3.apps.googleusercontent.com';
+let gmailToken=null;
+let tokenClient=null;
+
+function initGoogleClient(){
+  if(!window.google)return;
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:GMAIL_CLIENT_ID,
+    scope:'https://www.googleapis.com/auth/gmail.readonly',
+    callback:(resp)=>{
+      if(resp.error)return;
+      gmailToken=resp.access_token;
+      document.getElementById('btnGmail').textContent='🔄 Buscar';
+      document.getElementById('btnGmail').onclick=fetchGmailExpenses;
+      fetchGmailExpenses();
+    }
+  });
+}
+window.addEventListener('load',()=>setTimeout(initGoogleClient,1000));
+
+function connectGmail(){
+  if(!tokenClient){showToast('⚠️ Aguarde carregar...');return;}
+  tokenClient.requestAccessToken();
+}
+
+async function fetchGmailExpenses(){
+  if(!gmailToken){connectGmail();return;}
+  document.getElementById('btnGmail').textContent='⏳ Buscando...';
+  try{
+    // busca e-mails do ML e Shopee dos últimos 30 dias
+    const query='from:(noreply@mercadolivre.com OR noreply@shopee.com.br) newer_than:30d';
+    const r=await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=20`,{
+      headers:{Authorization:'Bearer '+gmailToken}
+    });
+    const data=await r.json();
+    if(!data.messages||!data.messages.length){
+      showToast('Nenhuma compra encontrada nos últimos 30 dias');
+      document.getElementById('btnGmail').textContent='🔄 Buscar';
+      return;
+    }
+    // busca detalhes de cada e-mail
+    const emails=await Promise.all(data.messages.slice(0,10).map(m=>
+      fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,{
+        headers:{Authorization:'Bearer '+gmailToken}
+      }).then(r=>r.json())
+    ));
+    renderDetectedExpenses(emails);
+    document.getElementById('btnGmail').textContent='🔄 Buscar';
+  }catch(e){
+    showToast('❌ Erro ao buscar e-mails');
+    document.getElementById('btnGmail').textContent='🔄 Buscar';
+    console.error(e);
+  }
+}
+
+function renderDetectedExpenses(emails){
+  const detected=emails.map(msg=>{
+    const headers=msg.payload?.headers||[];
+    const subject=headers.find(h=>h.name==='Subject')?.value||'Sem assunto';
+    const from=headers.find(h=>h.name==='From')?.value||'';
+    const date=headers.find(h=>h.name==='Date')?.value||'';
+    const isMl=from.includes('mercadolivre');
+    const source=isMl?'Mercado Livre':'Shopee';
+    const emoji=isMl?'🛒':'🛍';
+    // tenta extrair valor do assunto
+    const valMatch=subject.match(/R\$\s*([\d.,]+)/);
+    const value=valMatch?parseFloat(valMatch[1].replace('.','').replace(',','.')):0;
+    const d=new Date(date);
+    const dateStr=isNaN(d)?'':d.toISOString().slice(0,10);
+    return {subject,source,emoji,value,date:dateStr,msgId:msg.id};
+  });
+
+  const el=document.getElementById('gmailDetected');
+  el.style.display='block';
+  el.innerHTML=`
+    <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">
+      📧 ${detected.length} compra(s) detectada(s) — selecione para importar
+    </div>
+    ${detected.map((d,i)=>`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:7px;display:flex;align-items:center;gap:10px">
+      <div style="font-size:20px">${d.emoji}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.subject}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${d.source} · ${d.date}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        ${d.value?`<div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--red)">${fmtCur(d.value)}</div>`:''}
+        <button onclick="importGmailExpense(${i})" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:5px 10px;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px">Importar</button>
+      </div>
+    </div>`).join('')}`;
+  window._gmailDetected=detected;
+}
+
+function importGmailExpense(i){
+  const d=window._gmailDetected[i];
+  // abre modal de despesa pré-preenchido
+  openNewExp();
+  document.getElementById('eName').value=d.subject.slice(0,60);
+  document.getElementById('eCat').value='outros';
+  if(d.value)document.getElementById('eValue').value=fmtCur(d.value);
+  if(d.date)document.getElementById('eDate').value=d.date;
+}
+</script>
 // ===== SUPABASE CONFIG =====
 const SUPA_URL = 'https://jqomcnlyyultgyqyarjb.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxb21jbmx5eXVsdGd5cXlhcmpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MTkyOTQsImV4cCI6MjA4ODM5NTI5NH0.FHosImFILQF37m5VH6S8W0yq7KdCZThWNnnqZmJ9zh4';
@@ -1251,6 +1365,5 @@ async function init(){
 
 init();
 </script>
-
-
-</body></html>
+</body>
+</html>
