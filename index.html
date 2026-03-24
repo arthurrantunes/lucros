@@ -660,7 +660,6 @@ function importGmailExpense(i){
   if(d.value)document.getElementById('eValue').value=fmtCur(d.value);
   if(d.date)document.getElementById('eDate').value=d.date;
 }
-</script>
 // ===== SUPABASE CONFIG =====
 const SUPA_URL = 'https://jqomcnlyyultgyqyarjb.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxb21jbmx5eXVsdGd5cXlhcmpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MTkyOTQsImV4cCI6MjA4ODM5NTI5NH0.FHosImFILQF37m5VH6S8W0yq7KdCZThWNnnqZmJ9zh4';
@@ -965,7 +964,7 @@ function renderItemsList(){
       <input placeholder="Item" value="${item.desc||''}" list="dl-${item.id}" oninput="updateItem('${item.id}','desc',this.value)" />
       <input placeholder="Tam." value="${item.size||''}" oninput="updateItem('${item.id}','size',this.value)" />
       <input placeholder="Cor" value="${item.color||''}" oninput="updateItem('${item.id}','color',this.value)" />
-      <input type="number" min="1" value="${item.qty||1}" oninput="updateItem('${item.id}','qty',this.value)" style="text-align:center" />
+      <input type="number" min="1" value="${parseInt(item.qty)||1}" oninput="updateItem('${item.id}','qty',this.value)" style="text-align:center" />
       <input placeholder="R$ 0,00" value="${item.price?fmtCur(item.price):''}" oninput="formatMoneyItem(this,'${item.id}')" />
       <button class="btn-rm-item" onclick="removeItemRow('${item.id}')">×</button>
     </div>`;
